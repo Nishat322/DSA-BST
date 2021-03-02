@@ -30,7 +30,12 @@ class BinarySearchTree {
     find(key){
         if(this.key == key){ //if item is found at the root then return the value
             return this.value
+        } else if (key < this.key && this.left) { //if item is less than the root then follow the left child and then recursively check again if it is the left or right child until the firts condition is fulfilled
+            return this.left.find(key)
+        } else if (key > this.key && this.righ) {
+            return this.right.find(key)
+        } else { //entire tree has been serched and the key was not found
+            throw new Error('Key Error')
         }
-        
     }
 }
