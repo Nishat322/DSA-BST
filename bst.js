@@ -38,4 +38,70 @@ class BinarySearchTree {
             throw new Error('Key Error')
         }
     }
+
+    remove(key) {
+        if (this.key == key){
+            if(this.left && this.right) { // if it has both left and right children find minimum replace it with these values and call remove to delete the duplication later in the tree
+                const successor = this.right._findMin()
+                this.key = successor.key
+                this.value = successor.value
+                successor.remove(successor.key) 
+            } else if (this.left) { //if node has only left child replace node with its left child
+                this._replaceWith(this.left)
+            } else if (this.right) { //same logic as above
+                this._replaceWith(this.right)
+            } else { //if node has no children remove and replace any refrences to it with null
+                this._replaceWith(null)
+            }
+        } else if (key < this.key && this.left){
+            this.left.remove(key)
+        } else if (key > this.key && this.right){
+            this.right.remove(key)
+        } else {
+            throw new Error ('Key Error')
+        }
+    }
+
+    _replaceWith(node) { 
+        if(this.parent) { //if the node you are replacing is a parent 
+            if(this == this.parent.left) { //need to set refrences from the parent to the replacement node
+                this.parent.left = node
+            } else if (this == this.parent.right) {
+                this.parent.right = node
+            }
+            if(node) { //and replacement node back to the parent
+                node.parent = this.parent
+            }
+        } else { //otherwise it is just a root nofe then you copy over the properties of the replacement node
+            if(node) {
+                this.key = node.key
+                this.value = node.value
+                this.left = node.left
+                this.right = node.right
+            } else {
+                this.key = null
+                this.value = null
+                this.left = null
+                this.right = null
+            }
+        }
+    }
+
+    _findMin(){
+        if(!this.left){
+            return this
+        }
+        return this.left._findMin()
+    }
 }
+
+function main(arr){
+    const BST = new BinarySearchTree()
+
+    for (let i = 0; i <arr.length; i++){
+        BST.insert(arr[i])
+    }
+    console.log(BST)
+}
+
+main([3,1,4,6,9,2,5,7])
